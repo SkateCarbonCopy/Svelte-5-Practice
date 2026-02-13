@@ -2,10 +2,10 @@ import { fail, redirect } from '@sveltejs/kit';
 
 interface ReturnObject {
 	success: boolean;
-	name: string;
 	email: string;
 	password: string;
-	passwordConfirmation: string;
+	passwordConfirmation?: never;
+	name?: never;
 	errors: string[];
 }
 
@@ -14,23 +14,15 @@ export const actions = {
 		// going to do something with the given event
 		const formData = await request.formData();
 
-		const name = formData.get('name') as string;
 		const email = formData.get('email') as string;
 		const password = formData.get('password') as string;
-		const passwordConfirmation = formData.get('passwordConfirmation') as string;
 
 		const returnObject: ReturnObject = {
 			success: true,
 			email,
-			name,
 			password,
-			passwordConfirmation,
 			errors: []
 		};
-
-		if (name.length < 3) {
-			returnObject.errors.push('Name has to be at least 3 characters.');
-		}
 
 		if (!email.length) {
 			returnObject.errors.push('Email is required.');
@@ -40,16 +32,12 @@ export const actions = {
 			returnObject.errors.push('Password is required.');
 		}
 
-		if (password !== passwordConfirmation) {
-			returnObject.errors.push('Passwords do not match.');
-		}
-
 		if (returnObject.errors.length) {
 			returnObject.success = false;
 		}
 
 		// Registration flow...
-		const { data, error } = await supabase.auth.signUp({
+		const { data, error } = await supabase.auth.signInWithPassword({
 			email,
 			password
 		});

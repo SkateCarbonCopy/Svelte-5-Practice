@@ -22,12 +22,18 @@
 				{/each}
 			{/if}
 			{#if isRegistration}
-				<input type="text" placeholder="Name" name="name" />
+				<!-- The value being set here comes from the server, so if an error occurs when authorizing it doesn't reset on the user -->
+				<input type="text" placeholder="Name" name="name" value={form?.name || ''} />
 			{/if}
-			<input type="email" placeholder="Email" name="email" />
-			<input type="password" placeholder="password" name="password" />
+			<input type="email" placeholder="Email" name="email" value={form?.email || ''} />
+			<input type="password" placeholder="password" name="password" value={form?.password || ''} />
 			{#if isRegistration}
-				<input type="password" placeholder="Confirm password" name="passwordConfirmation" />
+				<input
+					type="password"
+					placeholder="Confirm password"
+					name="passwordConfirmation"
+					value={form?.passwordConfirmation || ''}
+				/>
 			{/if}
 			<Button type="submit">{isRegistration ? 'Register' : 'Login'}</Button>
 			{#if isRegistration}
